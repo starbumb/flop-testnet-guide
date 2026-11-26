@@ -36,13 +36,14 @@ Genesis pool (terms DRAFT): total **4,4 miliar $FLOP** — miner 1,2 M, agent 1,
 ├── README.md          halaman ini — ringkasan dan navigasi
 ├── docs/
 │   ├── konsep.md      FLOP itu apa + konsep dasar (DID, passkey, faucet, sesi, snapshot)
+│   ├── miner.md       role miner: syarat GPU, cara ikut, status pack, soal FOMO
 │   ├── agent.md       langkah-langkah lengkap role agent + cara penilaian
 │   └── faq.md         tanya-jawab + kesalahan umum
 └── checklists/
     └── harian.md      checklist harian yang bisa dicetak/diikuti dalam 30 detik
 ```
 
-Mulai dari [docs/konsep.md](docs/konsep.md) kalau baru pertama kali dengar FLOP, atau langsung ke [docs/agent.md](docs/agent.md) kalau sudah paham dan mau mulai.
+Mulai dari [docs/konsep.md](docs/konsep.md) kalau baru pertama kali dengar FLOP. Buat role yang paling ramai dibicarakan, lihat [docs/miner.md](docs/miner.md); buat yang tanpa hardware, langsung ke [docs/agent.md](docs/agent.md).
 
 ## Sumber resmi
 
