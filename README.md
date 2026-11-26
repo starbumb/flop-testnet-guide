@@ -1,151 +1,191 @@
-# FLOP Network Testnet — Guide Role Agent
+# Tutorial FLOP Network Testnet — Role Agent
 
-Guide ikut testnet FLOP Network dari sisi **agent**, ditulis dari garapan sendiri sejak testnet live 24 Nov 2026. Bukan guide resmi — ini catatan orang yang lagi garap beneran, termasuk kesalahan yang udah gue bayar sendiri. Diupdate jalan terus tiap ada perubahan.
+Panduan lengkap ikut testnet **FLOP Network** sebagai **agent**, berbahasa Indonesia, ditulis dari garapan sendiri sejak testnet live 24 November 2026 dan diperbarui setiap ada perubahan resmi.
 
-> **Disclaimer:** testnet FLOP masih early banget. Statusnya **unscored opening** — penilaian resmi belum mulai, terms airdrop masih **DRAFT** (semua angka bisa berubah), kit yang signed juga belum rilis. Token testnet nggak ada harganya. Guide ini nggak janjiin apa-apa.
+**Ringkasan 30 detik:** FLOP itu jaringan jasa inference AI. Ada tiga role — miner, validator, agent. Agent itu yang paling ringan: modalnya cuma **DID + wallet**, tanpa GPU. Tugas hariannya simpel: jaga identitas (DID), klaim faucet tiap hari, dan tahan posisi sampai fase scored dimulai — karena yang dinilai nanti adalah FLOP yang dibelanjakan untuk inference, bukan saldo yang ditimbun.
+
+> **Disclaimer:** Testnet FLOP masih tahap awal. Status saat ini **unscored opening** (penilaian resmi belum mulai), terms airdrop masih **DRAFT** dan bisa berubah, kit resmi yang signed belum rilis, dan token testnet tidak memiliki nilai. Guide ini bukan materi resmi FLOP Labs dan tidak menjanjikan hasil apa pun.
 
 ---
 
-## 1. FLOP itu apa, dijelasin gampang
+## Daftar isi
 
-FLOP itu jaringan buat **jasa AI (inference)** yang nggak dikontrol satu perusahaan. Inference itu proses AI mikir dan ngasih jawaban — kayak pas lo nanya sesuatu ke chatbot, ada komputer di belakang yang ngitung jawabannya. Nah, di FLOP, komputer yang ngitung itu punya orang-orang yang ikutan jaringan, bukan punya satu data center.
+1. [FLOP itu apa](#1-flop-itu-apa)
+2. [Tiga role, dan kenapa agent](#2-tiga-role-dan-kenapa-agent)
+3. [Konsep dasar yang wajib paham](#3-konsep-dasar-yang-wajib-paham)
+4. [Status testnet saat ini](#4-status-testnet-saat-ini)
+5. [Prasyarat](#5-prasyarat)
+6. [Langkah-langkah](#6-langkah-langkah)
+7. [Cara penilaian agent](#7-cara-penilaian-agent)
+8. [Kesalahan umum](#8-kesalahan-umum)
+9. [FAQ](#9-faq)
+10. [Checklist harian](#10-checklist-harian)
+11. [Sumber resmi](#11-sumber-resmi)
+12. [Update log](#12-update-log)
 
-Sistemnya disebut **proof-of-inference**: yang nyediain hitungan harus bisa buktiin kerjanya bener, dan dari bukti kerja itulah pembagian hasilnya dihitung.
+---
 
-Di dalem jaringan ini ada tiga peran:
+## 1. FLOP itu apa
 
-- **Miner** — yang punya "mesin hitung" (GPU). Dia yang ngerjain inference-nya.
-- **Validator** — yang ngecek dan nyatet semua transaksi biar jaringan jujur dan jalan terus.
-- **Agent** — yang **belanja** inference. Kayak pelanggan yang make jasa AI lewat jaringan ini.
+Inference adalah proses AI "berpikir" dan menghasilkan jawaban — setiap kali sebuah model AI menjawab pertanyaan, ada komputer yang melakukan hitungannya. FLOP adalah jaringan terdesentralisasi untuk jasa itu: hitungannya dikerjakan oleh komputer milik para peserta jaringan, bukan oleh satu perusahaan, dan sistem **proof-of-inference** memastikan pekerjaan itu bisa dibuktikan dan dicatat dengan jujur.
 
-Guide ini fokus ke **agent**, karena itu peran yang lagi gue garap dan syaratnya paling ringan.
+Sederhananya, FLOP adalah pasar jasa AI:
 
-## 2. Kenapa agent, bukan miner atau validator
+- **Miner** menyediakan mesin hitungnya (GPU).
+- **Validator** menjaga dan mencatat jaringan.
+- **Agent** memakai jasanya — membeli inference untuk menjalankan tugas-tugas AI.
 
-| Role | Syarat masuk | Yang dinilai | Butuh hardware? |
+Token $FLOP adalah "bahan bakar" untuk transaksi di jaringan ini. Testnet adalah jaringan percobaannya sebelum mainnet meluncur (target genesis **Q1 2027**).
+
+## 2. Tiga role, dan kenapa agent
+
+| Role | Syarat masuk | Yang dinilai | Hardware |
 |---|---|---|---|
-| Miner | GPU 16GB+ VRAM | Compute yang disediain | Iya, berat |
-| Validator | 8 core CPU, RAM 64GB (disaranin), 4TB NVMe | Uptime + partisipasi | Iya, berat |
-| **Agent** | **DID + wallet** | **FLOP testnet yang dibelanjain buat inference** | **Nggak** |
+| Miner | GPU 16GB+ VRAM | Compute yang disediakan | Berat |
+| Validator | CPU 8 core, RAM 64GB (disarankan), 4TB NVMe | Uptime dan partisipasi | Berat |
+| **Agent** | **DID + wallet** | **FLOP yang dibelanjakan untuk inference dalam sesi yang settle** | **Tidak perlu** |
 
-Buat miner/validator, guide operator yang lengkap udah ada di tempat lain. Buat agent, hampir nggak ada yang nulis — makanya guide ini ada.
+Pembagian genesis pool menurut terms (masih DRAFT) — total **4,4 miliar $FLOP**:
 
-Soal hadiahnya: genesis pool-nya **4,4 miliar $FLOP** — miner 1,2 M, agent 1,2 M, validator 1,2 M, cadangan ekosistem 800 jt. Snapshot diambil pas testnet ditutup, distribusi di genesis **Q1 2027**. Semua ini dari terms yang masih DRAFT.
+- Miner: 1,2 miliar
+- Agent: 1,2 miliar
+- Validator: 1,2 miliar
+- Cadangan ekosistem: 800 juta
 
-## 3. Konsep yang wajib paham dulu
+Guide ini khusus membahas agent: role yang tidak butuh modal hardware sama sekali, dan yang sejauh ini paling jarang dibahas. Untuk miner dan validator, rujuk dokumentasi resmi dan guide operator komunitas.
 
-Lima istilah ini bakal muncul terus. Paham ini dulu, sisanya gampang.
+## 3. Konsep dasar yang wajib paham
 
-**DID** — identitas lo di FLOP, bentuknya `did:key:z6Mk...`. Ini yang nempel ke semua aktivitas lo. DID itu publik, aman dishare ke mana-mana.
+**DID** — Identitas kamu di FLOP, berformat `did:key:z6Mk...`. Semua aktivitasmu tercatat atas nama DID ini. DID bersifat publik dan aman dibagikan.
 
-**Passkey** — kunci buat masuk ke DID lo (Windows Hello di laptop, atau biometrik HP). Ini bagian paling penting di seluruh guide: **passkey ilang = DID lo ilang permanen.** Nggak ada password cadangan, nggak ada tombol reset, nggak ada CS yang bisa nolong. Gue nulis ini karena gue udah ngalamin sendiri (ceritanya di bagian 7).
+**Passkey** — Satu-satunya kunci masuk ke DID kamu, dibuat lewat Windows Hello (laptop) atau biometrik (HP). Tidak ada password, tidak ada frasa cadangan, tidak ada reset. **Passkey hilang = DID hilang permanen**, beserta seluruh riwayatnya. Ini poin paling penting di seluruh guide ini.
 
-**Faucet** — keran token testnet gratis. Lo klaim, lo dapet modal FLOP testnet buat dipake. Di FLOP, klaimnya lewat room chat, bukan tombol di website (detailnya di bagian 5).
+**Faucet** — Sumber token testnet gratis. Di FLOP, klaim faucet dilakukan dengan mengirim pesan di room chat Technocore (bukan tombol di website), sekali sehari.
 
-**Inference session** — sesi pas agent beneran make jasa inference dan pembayarannya settle (kelar tercatat). **Ini yang dihitung buat jatah agent**, bukan saldo lo.
+**Sesi inference yang settle** — Sesi pemakaian inference yang pembayarannya selesai tercatat. Inilah aktivitas yang dihitung untuk jatah agent (lihat bagian 7).
 
-**Snapshot & genesis** — snapshot itu momen testnet ditutup dan semua aktivitas dibekukan jadi data final. Genesis itu lahirnya mainnet (target Q1 2027), dan di momen itulah distribusi $FLOP kejadian.
+**Snapshot** — Momen testnet ditutup dan seluruh aktivitas dibekukan menjadi data final untuk distribusi di genesis.
 
-## 4. Status sekarang (26 Nov 2026)
+## 4. Status testnet saat ini
 
-Biar nggak salah ekspektasi, ini kondisi lapangannya:
+Per 26 November 2026:
 
-- Testnet live sejak 24 Nov 2026, fase **unscored opening** — aktivitas sekarang **belum dinilai resmi**
-- Fase **scored** (yang beneran dihitung): belum mulai, nunggu pengumuman
-- **Enrollment agent di testnet: belum dibuka penuh**
-- Jalur inference agent yang terdokumentasi baru ada di **devnet — dan devnet eksplisit nggak dapet kredit airdrop**
-- Explorer (testnet.flopscan.io) masih read-only, datanya sering kosong
+- Testnet live sejak 24 November 2026, fase **unscored opening** — aktivitas sekarang belum dinilai secara resmi.
+- Fase **scored** (yang benar-benar dihitung) belum dimulai; tanggalnya menunggu pengumuman resmi.
+- **Enrollment agent di testnet belum dibuka penuh.**
+- Jalur inference agent yang terdokumentasi saat ini masih berada di **devnet**, dan devnet secara eksplisit **tidak** mendapat kredit airdrop.
+- Explorer (testnet.flopscan.io) masih read-only dan datanya sering belum tampil.
 
-Artinya posisi paling bener sekarang: **siapin identitas, klaim faucet tiap hari, dan tunggu fase scored + enrollment dibuka.** Bukan kejar-kejaran aktivitas yang belum tentu kehitung.
+Kesimpulan praktis: pekerjaan agent saat ini adalah **persiapan** — punya DID yang sehat, klaim faucet harian sebagai modal, dan menunggu fase scored serta enrollment dibuka.
 
-## 5. Step-by-step
+## 5. Prasyarat
 
-### Step 1 — Bikin DID di Technocore
+- Laptop atau HP yang bisa membuat passkey (Windows Hello / biometrik).
+- Akses ke [Technocore](https://technocore.chat/humans).
+- Wallet crypto (untuk kebutuhan agent berikutnya saat enrollment dibuka).
+- Tidak perlu: GPU, server, modal uang asli.
 
-1. Buka [technocore.chat/humans](https://technocore.chat/humans)
-2. Bikin **passkey** — laptop lo bakal minta Windows Hello (PIN/sidik jari), atau arahin ke HP
-3. Identitas lo langsung jadi, DID-nya muncul dalam bentuk `did:key:z6Mk...`
-4. **Catat DID lo** (aman, ini publik)
+## 6. Langkah-langkah
 
-Yang lo dapet dari step ini: satu identitas FLOP. Yang lo pegang: passkey-nya ada di device lo — jagain kayak lo jagain kunci rumah satu-satunya, karena memang nggak ada duplikatnya.
+### Langkah 1 — Buat DID lewat Technocore
 
-### Step 2 — Paham hubungan DID dan passkey
+1. Buka [technocore.chat/humans](https://technocore.chat/humans).
+2. Buat **passkey** — perangkatmu akan meminta Windows Hello atau biometrik.
+3. Identitasmu langsung dibuat; DID-mu tampil dalam format `did:key:z6Mk...`.
+4. Catat DID-mu di tempat yang aman. DID itu publik, mencatatnya tidak berisiko.
 
-DID = nama identitasnya. Passkey = satu-satunya cara masuk. Ganti device atau passkey ilang, DID lama **nggak bisa dipake lagi** dan semua riwayat di DID itu hangus. DID baru = mulai dari nol. Ini bukan teori — gue ganti DID tanggal 26 Nov dan claim 2 hari gue sebelumnya nggak keitung lagi.
+Hasil langkah ini: satu identitas FLOP yang melekat pada passkey di perangkatmu.
 
-### Step 3 — Sign in tiap hari itu normal
+### Langkah 2 — Pahami hubungan DID dan passkey
 
-Sesi Technocore nggak awet semalem. Besoknya lo bakal diminta sign in passkey lagi. Itu **normal, bukan error, dan bukan tanda akun lo kenapa-kenapa**. Sign in aja pake passkey yang sama — DID lo balik persis kayak kemarin. Yang jangan dilakuin: bikin passkey baru (itu = identitas baru, lihat step 2).
+DID adalah identitasnya; passkey adalah satu-satunya cara masuk ke identitas itu. Jika passkey hilang atau perangkat berganti tanpa passkey yang sama, DID lama tidak bisa dipakai lagi dan seluruh riwayatnya hangus — DID baru berarti mulai dari awal.
 
-### Step 4 — Klaim faucet harian
+Pengalaman penulis: pada 26 November 2026 passkey lama tidak bisa dibuka lagi, sehingga penulis berganti DID baru dan klaim dua hari sebelumnya tidak lagi terhubung. Jadikan ini pengingat untuk memakai perangkat yang benar-benar kamu pegang setiap hari.
 
-Di room **/r/faucet** di Technocore, kirim pesan ini **sekali sehari**:
+### Langkah 3 — Sign in harian adalah hal normal
+
+Sesi Technocore tidak bertahan semalaman. Setiap hari kamu akan diminta sign in kembali dengan passkey. Itu perilaku normal sistem, bukan error dan bukan masalah akun. Sign in dengan passkey yang sama dan DID-mu kembali seperti sebelumnya.
+
+Jangan membuat passkey baru hanya karena diminta sign in — passkey baru berarti identitas baru (lihat langkah 2).
+
+### Langkah 4 — Klaim faucet setiap hari
+
+Di room **/r/faucet** pada Technocore, kirim pesan berikut **satu kali sehari**:
 
 ```
-FLOP testnet faucet claim. DID: did:key:DID_LO_DISINI. Requesting daily testnet FLOP faucet grant to spend on inference.
+FLOP testnet faucet claim. DID: did:key:DID_KAMU_DISINI. Requesting daily testnet FLOP faucet grant to spend on inference.
 ```
 
-Catatan soal klaim ini:
+Perhatikan:
 
-- Ganti `DID_LO_DISINI` sama DID lo sendiri, persis, jangan sampai salah satu karakter
-- Nggak ada field wallet di format resminya — jangan nambah-nambahin
-- Nominal grant-nya **nggak ditampilin di mana pun** (nggak di room, nggak di explorer). Jadi jangan bingung kalo lo nggak bisa liat saldo — semua orang juga gitu
+- Ganti `DID_KAMU_DISINI` dengan DID-mu sendiri, persis tanpa salah satu karakter pun.
+- Format resminya tidak memakai alamat wallet — jangan menambah field lain.
+- Nominal grant tidak ditampilkan di mana pun (tidak di room, tidak di explorer), jadi tidak adanya angka saldo yang terlihat adalah hal yang normal untuk semua orang.
 
-### Step 5 — Habis klaim, ngapain?
+### Langkah 5 — Tahan posisi sampai fase scored
 
-Jujur aja: sekarang ya **nahan posisi**. Grant faucet itu modal buat nanti, pas enrollment agent testnet dibuka dan fase scored jalan — di titik itu agent mulai belanja inference dan aktivitasnya mulai kehitung. Sambil nunggu:
+Setelah klaim, tidak ada lagi yang perlu dikejar setiap hari selain mengulang langkah 3–4. Grant faucet adalah modal untuk fase berikutnya: ketika enrollment agent testnet dibuka dan fase scored berjalan, agent mulai membelanjakan FLOP untuk inference dan aktivitas itulah yang dihitung.
 
-- Klaim lagi besok (step 4), tiap hari
-- Pantau pengumuman @flop_labs soal fase scored
-- **Jangan** belanja inference di devnet ngarep kehitung — devnet nggak dapet kredit, titik
+Sambil menunggu:
 
-## 6. Cara penilaian agent, dijelasin
+- Klaim faucet setiap hari.
+- Ikuti pengumuman resmi soal fase scored dan enrollment.
+- Jangan membelanjakan apa pun di devnet dengan harapan dihitung — devnet tidak mendapat kredit.
 
-Jatah agent (pool 1,2 M $FLOP) dibagi **pro-rata dari compute yang dibeli agent dalam sesi inference yang settle**. Maksudnya:
+## 7. Cara penilaian agent
 
-- Lo belanja inference → sesi lo settle → porsi lo kehitung
-- Lo cuma pegang token faucet nganggur → **porsi lo nol**, sesimpel itu
+Jatah agent (pool 1,2 miliar $FLOP) dibagi secara **pro-rata berdasarkan compute yang dibeli agent dalam sesi inference yang settle**. Artinya:
 
-Faucet itu modal awal, bukan hasil. Yang dinilai itu pemakaiannya. Dan karena fase scored belum mulai, semua angka cara hitung ini masih dari terms DRAFT — bisa berubah, makanya guide ini gue update terus.
+- FLOP yang dibelanjakan untuk inference dan sesinya settle → terhitung.
+- FLOP faucet yang hanya disimpan → **tidak terhitung sama sekali**.
 
-## 7. Kesalahan yang udah gue bayar sendiri
+Faucet adalah modal, bukan skor. Seluruh mekanisme ini berasal dari terms yang masih berstatus DRAFT, sehingga detailnya dapat berubah; guide ini diperbarui mengikuti pengumuman resmi.
 
-**Passkey ilang (26 Nov 2026).** Passkey lama gue nggak kebuka lagi. Nggak ada jalan pulang: gue bikin identitas baru, DID baru, dan claim tanggal 24–25 Nov hangus begitu aja. Pelajarannya: pastiin passkey lo kesimpen di device yang beneran lo pegang tiap hari, dan kenali DID lo sendiri biar lo sadar kalo yang kebuka tiba-tiba DID yang beda.
+## 8. Kesalahan umum
 
-**Panik pas diminta sign in ulang.** Hari pertama gue kira sesi gue rusak. Ternyata emang begitu sistemnya tiap hari. Udah gue tulis di step 3 biar lo nggak panik kayak gue.
+1. **Kehilangan passkey.** Akibatnya fatal dan permanen: DID baru, riwayat hangus. Pakai perangkat utama, dan kenali DID-mu sendiri.
+2. **Panik saat diminta sign in ulang.** Itu rutinitas harian, bukan kerusakan.
+3. **Mengira saldo faucet adalah skor.** Yang dinilai adalah pemakaian inference yang settle, bukan timbunan token.
+4. **Mengira agent butuh GPU.** GPU adalah syarat miner. Agent hanya butuh DID dan wallet.
+5. **Beraktivitas di devnet demi airdrop.** Devnet tidak mendapat kredit — waktu terbuang.
+6. **Klaim berulang dalam sehari.** Format faucet adalah harian; satu kali sehari sudah cukup.
 
-**Ngira faucet nganggur keitung.** Awalnya gue kira makin rajin klaim makin gede jatah. Salah — baca lagi bagian 6.
+## 9. FAQ
 
-**Ngira agent butuh GPU.** Itu miner. Agent cuma DID + wallet.
+**Apakah agent benar-benar tidak butuh GPU?**
+Benar. GPU 16GB+ adalah syarat miner. Agent hanya membutuhkan DID dan wallet.
 
-## 8. FAQ
+**Bagaimana cara tahu klaim faucet saya sudah masuk?**
+Saat ini tidak ada tampilan nominal grant di room maupun explorer. Jika pesan klaimmu terkirim di /r/faucet dengan DID yang benar, itulah yang bisa dilakukan — sisanya belum dapat diverifikasi oleh siapa pun.
 
-**Q: Agent beneran nggak butuh GPU sama sekali?**
-A: Beneran. GPU itu syarat miner. Agent modalnya DID + wallet.
+**Saya sudah klaim beberapa hari tapi tidak ada progres. Kenapa?**
+Karena fase scored belum dimulai. Yang sedang kamu bangun sekarang adalah posisi dan modal, bukan skor.
 
-**Q: Klaim faucet gue udah masuk belum? Saldonya kok nggak keliatan?**
-A: Emang nggak ada tempat buat liat nominalnya sekarang. Kalo pesan klaim lo udah terkirim di /r/faucet pake DID yang bener, itu yang bisa lo lakuin. Sisanya belum bisa diverifikasi siapa pun.
+**Apakah DID aman dibagikan?**
+Aman — DID bersifat publik. Yang tidak boleh dibagikan adalah akses ke passkey atau perangkatmu.
 
-**Q: Gue udah klaim 2 hari, kok rasanya nggak ada progres?**
-A: Karena fase scored belum mulai. Yang lo bangun sekarang itu posisi + modal, bukan skor.
+**Kapan fase scored dimulai?**
+Belum ada tanggal resmi. Guide ini diperbarui pada hari yang sama ketika pengumumannya keluar.
 
-**Q: Boleh klaim lebih dari sekali sehari?**
-A: Formatnya harian. Sekali sehari, jangan spam room orang.
+**Apakah ada grup resmi FLOP di Discord/Telegram?**
+Tidak ada. Sumber resmi hanya yang tercantum di bagian 11.
 
-**Q: DID gue aman dishare?**
-A: Aman, DID itu publik. Yang nggak boleh dishare itu akses ke passkey/device lo.
+## 10. Checklist harian
 
-**Q: Kapan fase scored mulai?**
-A: Belum ada tanggal resmi. Kalo udah diumumin, guide ini gue update di hari yang sama.
+- [ ] Sign in Technocore dengan passkey — pastikan DID yang tampil adalah DID yang sama.
+- [ ] Kirim klaim faucet di /r/faucet dengan format pada langkah 4.
+- [ ] Sekilas cek @flop_labs untuk pengumuman fase scored / enrollment.
+- [ ] Selesai. Tidak perlu aktivitas devnet.
 
-## 9. Checklist harian (versi 30 detik)
+## 11. Sumber resmi
 
-- [ ] Sign in Technocore pake passkey (DID yang sama!)
-- [ ] Kirim klaim di /r/faucet pake format di step 4
-- [ ] Cek sekilas @flop_labs — ada pengumuman fase scored / enrollment nggak
-- [ ] Udah. Tutup. Jangan devnet.
+- Website: [flop.finance](https://flop.finance)
+- Dokumentasi: [docs.flop.network](https://docs.flop.network)
+- X: [@flop_labs](https://x.com/flop_labs)
+- Explorer testnet: [testnet.flopscan.io](https://testnet.flopscan.io)
+- Technocore (identitas & faucet): [technocore.chat/humans](https://technocore.chat/humans)
 
-## Update log
+## 12. Update log
 
-- **26 Nov 2026** — guide ditulis ulang total: penjelasan konsep, step detail, FAQ, checklist. Penulis ganti DID baru gara-gara insiden passkey (bagian 7) — klaim jalan lagi dari DID baru.
-- **24 Nov 2026** — testnet live, klaim pertama.
+- **26 Nov 2026** — Guide disusun ulang menjadi versi lengkap: konsep dasar, prasyarat, langkah terperinci, penilaian, FAQ, checklist, dan sumber resmi. Penulis berganti DID baru akibat insiden passkey (bagian 8) — klaim berjalan kembali dengan DID baru.
+- **24 Nov 2026** — Testnet live; klaim faucet pertama.
