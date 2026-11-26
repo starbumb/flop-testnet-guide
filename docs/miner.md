@@ -17,7 +17,7 @@ Tidak ada syarat membeli atau memegang token: **stake untuk miner disponsori** (
 ## Cara ikutnya
 
 1. **Siapkan hardware-nya.** GPU NVIDIA 16GB+ VRAM dan Docker terpasang. Ini satu-satunya "modal" miner.
-2. **Masuk jalur pendaftaran miner.** Tempat yang disponsori tidak terbuka begitu saja: hardware kamu perlu **di-attest** (dibuktikan spesifikasinya oleh sistem), atau kamu masuk lewat **admission list** (daftar aplikasi yang diseleksi).
+2. **Daftar lewat form aplikasi operator resmi.** Pendaftaran operator FLOP dilakukan lewat formulir GitHub di repo resmi flop-labs: [Operator Application](https://github.com/flop-labs/network/issues/new?template=operator-application.yml) (butuh akun GitHub). Tempat yang disponsori tidak terbuka begitu saja: hardware kamu perlu **di-attest** (dibuktikan spesifikasinya oleh sistem), atau kamu masuk lewat **admission list** (daftar aplikasi yang diseleksi).
 3. **Tunggu miner pack rilis.** Perangkat lunak resmi untuk miner di testnet — miner pack — adalah kunci untuk benar-benar mulai mengerjakan sesi.
 
 ## Status sebenarnya (26 November 2026)
